@@ -52,11 +52,31 @@ module TabsOnRails
 
       "".tap do |html|
         html << open_tabs(open_tabs_options).to_s
-        html << @context.capture(self, &block)
+        html << order_items(&block)
         html << close_tabs(close_tabs_options).to_s
       end.html_safe
     end
 
+    def order_items(&block)
+      block.call(self)
+
+      candidates = ActiveSupport::SafeBuffer.new
+      @builder.tab_list['candidates'].each do |candidate|
+        candidates << @context.content_tag('li') do
+          candidate
+        end
+      end
+
+      output = ActiveSupport::SafeBuffer.new
+      output << @builder.tab_list['active']
+      output << @context.content_tag('ul', class: 'dropdown') do
+        candidates.to_s
+      end
+
+      @context.content_tag('li', @options[:active]) do
+        output.to_s
+      end.to_s.html_safe
+    end
   end
 
 end

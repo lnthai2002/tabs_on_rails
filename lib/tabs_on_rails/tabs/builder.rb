@@ -36,8 +36,12 @@ module TabsOnRails
         @context   = context
         @namespace = options.delete(:namespace) || :default
         @options   = options
+        @list = {'active'=>'', 'candidates'=>[]}
       end
 
+      def tab_list
+        return @list
+      end
       # Returns true if +tab+ is the +current_tab+.
       #
       # Examples
