@@ -50,44 +50,9 @@ module TabsOnRails
         @tabs[:list] << @context.content_tag(:li, content, item_options)
      end
 
-      # Returns an unordered list open tag.
-      #
-      # The <tt>options</tt> hash is used to customize the HTML attributes of the tag.
-      #
-      #   open_tag
-      #   # => "<ul>"
-      #
-      #   open_tag :class => "centered"
-      #   # => "<ul class=\"centered\">"
-      #
-      # Implements Builder#open_tabs.
-      #
-      def open_tabs(options = {})
-        @context.tag("ul", options, open = true)
-      end
-
-      # Returns an unordered list close tag.
-      #
-      # The <tt>options</tt> hash is ignored here.
-      # It exists only for coherence with the parent Builder API.
-      #
-      #   close_tag
-      #   # => "</ul>"
-      #
-      #   close_tag :class => "centered"
-      #   # => "</ul>"
-      #
-      # Implements Builder#close_tabs.
-      #
-      def close_tabs(options = {})
-        "</ul>".html_safe
-      end
-
       def build_tabs(options)
-        return "".tap do |html|
-          html << open_tabs(options[:open_tabs]).to_s
-          html << @tabs[:list].join
-          html << close_tabs(options[:close_tabs]).to_s
+        return @context.content_tag("ul", options[:open_tabs]) do
+          @tabs[:list].join
         end
       end
     end
