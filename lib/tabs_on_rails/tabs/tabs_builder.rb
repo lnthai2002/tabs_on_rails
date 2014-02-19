@@ -38,11 +38,16 @@ module TabsOnRails
       # Implements Builder#tab_for.
       #
       def tab_for(tab, name, url_options, item_options = {})
-        item_options[:class] = item_options[:class].to_s.split(" ").push(@options[:active_class] || "current").join(" ") if current_tab?(tab)
+        item_options[:class] = item_options[:class].to_s.split(' ')
+        if current_tab?(tab)
+          item_options[:class] = item_options[:class].push(@options[:active_class] || 'current')
+          @tabs[:active] = @tabs[:list].size + 1 #mark location of the active tab
+        end
+        item_options[:class] = item_options[:class].join(' ')
         content = @context.link_to_unless(current_tab?(tab), name, url_options) do
           @context.content_tag(:span, name)
         end
-        @context.content_tag(:li, content, item_options)
+        @tabs[:list] << @context.content_tag(:li, content, item_options)
      end
 
       # Returns an unordered list open tag.
@@ -78,7 +83,13 @@ module TabsOnRails
         "</ul>".html_safe
       end
 
+      def build_tabs(options)
+        return "".tap do |html|
+          html << open_tabs(options[:open_tabs]).to_s
+          html << @tabs[:list].join
+          html << close_tabs(options[:close_tabs]).to_s
+        end
+      end
     end
-
   end
 end

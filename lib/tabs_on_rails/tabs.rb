@@ -45,37 +45,8 @@ module TabsOnRails
     # Returns the String HTML content.
     def render(&block)
       raise LocalJumpError, "no block given" unless block_given?
-
-      options = @options.dup
-      open_tabs_options  = options.delete(:open_tabs)  || {}
-      close_tabs_options = options.delete(:close_tabs) || {}
-
-      "".tap do |html|
-        html << open_tabs(open_tabs_options).to_s
-        html << order_items(&block)
-        html << close_tabs(close_tabs_options).to_s
-      end.html_safe
-    end
-
-    def order_items(&block)
-      block.call(self)
-
-      candidates = ActiveSupport::SafeBuffer.new
-      @builder.tab_list['candidates'].each do |candidate|
-        candidates << @context.content_tag('li') do
-          candidate
-        end
-      end
-
-      output = ActiveSupport::SafeBuffer.new
-      output << @builder.tab_list['active']
-      output << @context.content_tag('ul', class: 'dropdown') do
-        candidates.to_s
-      end
-
-      @context.content_tag('li', @options[:active]) do
-        output.to_s
-      end.to_s.html_safe
+      @builder.parse(self, &block)#execute the tab declaration blocks to records links
+      @builder.build_tabs(@options).html_safe
     end
   end
 

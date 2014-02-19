@@ -36,12 +36,14 @@ module TabsOnRails
         @context   = context
         @namespace = options.delete(:namespace) || :default
         @options   = options
-        @list = {'active'=>'', 'candidates'=>[]}
+        @tabs = {active: nil, list: []}
       end
 
-      def tab_list
-        return @list
+      #Execute the template block declaring tabs, passing it the tabs 
+      def parse(tabs, &block)
+        block.call(tabs)
       end
+
       # Returns true if +tab+ is the +current_tab+.
       #
       # Examples
@@ -75,6 +77,12 @@ module TabsOnRails
       def close_tabs(*args)
       end
 
+      # How you want the list of tabs appear, active standout from the rest, idles list in UL,...
+      #
+      # Raises NotImplemented: you should implement this method in your custom Builder.
+      def build_tabs(options)
+        raise NotImplementedError
+      end
     end
 
   end
