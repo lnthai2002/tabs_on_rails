@@ -77,6 +77,11 @@ module TabsOnRails
       def close_tabs(*args)
       end
 
+      # Override this method to use a custom close tag for your tabs.
+      def add_raw(string)
+        raise NotImplementedError
+      end
+
       # How you want the list of tabs appear, active standout from the rest, idles list in UL,...
       #
       # Raises NotImplemented: you should implement this method in your custom Builder.

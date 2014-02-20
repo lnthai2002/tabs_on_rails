@@ -39,6 +39,9 @@ module TabsOnRails
       @builder.tab_for(*args, &block)
     end
 
+    def raw(string)
+      @builder.add_raw(string)
+    end
 
     # Renders the tab stack using the current builder.
     #

@@ -48,7 +48,11 @@ module TabsOnRails
           @context.content_tag(:span, name)
         end
         @tabs[:list] << @context.content_tag(:li, content, item_options)
-     end
+      end
+
+      def add_raw(string)
+        @tab[:list] << string
+      end
 
       def build_tabs(options)
         return @context.content_tag("ul", options[:open_tabs]) do
